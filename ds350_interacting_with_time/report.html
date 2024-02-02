@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>How to use Volume in Trading Strategy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script type="text/javascript">
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+if (typeof require !== 'undefined') {
+require.undef("plotly");
+requirejs.config({
+    paths: {
+        'plotly': ['https://cdn.plot.ly/plotly-2.27.0.min']
+    }
+});
+require(['plotly'], function(Plotly) {
+    window._Plotly = Plotly;
+});
+}
+</script>
+
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to use Volume in Trading Strategy</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="question" class="level3">
+<h3 class="anchored" data-anchor-id="question">Question:</h3>
+<p><strong>“How does trading volume correlate with price movements? Are there specific instances of high volume coinciding with significant price changes, providing potential signals for an investor’s trading strategy?”</strong></p>
+<div id="5eef5899" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lets_plot <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>LetsPlot.setup_html()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+
+            <div id="UL220m"></div>
+            <script type="text/javascript" data-lets-plot-script="library">
+                if(!window.letsPlotCallQueue) {
+                    window.letsPlotCallQueue = [];
+                }; 
+                window.letsPlotCall = function(f) {
+                    window.letsPlotCallQueue.push(f);
+                };
+                (function() {
+                    var script = document.createElement("script");
+                    script.type = "text/javascript";
+                    script.src = "https://cdn.jsdelivr.net/gh/JetBrains/lets-plot@v4.2.0/js-package/distr/lets-plot.min.js";
+                    script.onload = function() {
+                        window.letsPlotCall = function(f) {f();};
+                        window.letsPlotCallQueue.forEach(function(f) {f();});
+                        window.letsPlotCallQueue = [];
+                        
+                    };
+                    script.onerror = function(event) {
+                        window.letsPlotCall = function(f) {};    // noop
+                        window.letsPlotCallQueue = [];
+                        var div = document.createElement("div");
+                        div.style.color = 'darkred';
+                        div.textContent = 'Error loading Lets-Plot JS';
+                        document.getElementById("UL220m").appendChild(div);
+                    };
+                    var e = document.getElementById("UL220m");
+                    e.appendChild(script);
+                })()
+            </script>
+            
+</div>
+</div>
+<p>I created a new column called Price_Difference to support my study. I calculated the magnitude of the move by dividing the daily price change by the opening price</p>
+<div id="d2852b30" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pdat <span class="op">=</span> pl.read_parquet(<span class="st">"stock.parquet"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>pdat <span class="op">=</span> pdat.with_columns(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    Price_Difference<span class="op">=</span>(pdat[<span class="st">'Close'</span>] <span class="op">-</span> pdat[<span class="st">'Open'</span>]) <span class="op">/</span>  pdat[<span class="st">'Open'</span>]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s first use describe() to study the Volume and Price_Difference data to help us find how to define significant price changes. We sperate the dataset into three parts according to the daily rise and fall of price.</p>
+<div id="d918b57a" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>price_rise_pdat <span class="op">=</span> pdat.<span class="bu">filter</span>(pdat[<span class="st">'Price_Difference'</span>] <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>price_stay_pdat <span class="op">=</span> pdat.<span class="bu">filter</span>(pdat[<span class="st">'Price_Difference'</span>] <span class="op">==</span> <span class="dv">0</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>price_drop_pdat <span class="op">=</span> pdat.<span class="bu">filter</span>(pdat[<span class="st">'Price_Difference'</span>] <span class="op">&lt;</span> <span class="dv">0</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>price_rise_pdat.select([<span class="st">'Volume'</span>, <span class="st">'Price_Difference'</span>]).describe()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>price_drop_pdat.select([<span class="st">'Volume'</span>, <span class="st">'Price_Difference'</span>]).describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 3)</small>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">statistic</th>
+<th data-quarto-table-cell-role="th">Volume</th>
+<th data-quarto-table-cell-role="th">Price_Difference</th>
+</tr>
+<tr class="odd">
+<th>str</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"count"</td>
+<td>6149.0</td>
+<td>6149.0</td>
+</tr>
+<tr class="even">
+<td>"null_count"</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td>"mean"</td>
+<td>1.7970e7</td>
+<td>-0.013187</td>
+</tr>
+<tr class="even">
+<td>"std"</td>
+<td>2.6020e7</td>
+<td>0.012892</td>
+</tr>
+<tr class="odd">
+<td>"min"</td>
+<td>214800.0</td>
+<td>-0.166819</td>
+</tr>
+<tr class="even">
+<td>"25%"</td>
+<td>3.2153e6</td>
+<td>-0.017613</td>
+</tr>
+<tr class="odd">
+<td>"50%"</td>
+<td>6.1681e6</td>
+<td>-0.009599</td>
+</tr>
+<tr class="even">
+<td>"75%"</td>
+<td>2.36695e7</td>
+<td>-0.004404</td>
+</tr>
+<tr class="odd">
+<td>"max"</td>
+<td>3.27097378e8</td>
+<td>-0.000042</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>After studying the data, I am going to use five percent as an indicator to explore.</p>
+<div id="e77c40aa" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tar_drop <span class="op">=</span> pdat.<span class="bu">filter</span>(pdat[<span class="st">'Price_Difference'</span>] <span class="op">&lt;</span> <span class="op">-</span><span class="fl">0.05</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>tar_rise <span class="op">=</span> pdat.<span class="bu">filter</span>(pdat[<span class="st">'Price_Difference'</span>] <span class="op">&gt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>rise <span class="op">=</span> go.Scatter(x<span class="op">=</span>tar_rise[<span class="st">'Volume'</span>],</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                    y<span class="op">=</span>tar_rise[<span class="st">'Price_Difference'</span>],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                    mode<span class="op">=</span><span class="st">'markers'</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                    text<span class="op">=</span>tar_rise[<span class="st">'date'</span>],  <span class="co"># 在鼠标悬停时显示日期</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                    marker<span class="op">=</span><span class="bu">dict</span>(size<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">'blue'</span>),  <span class="co"># 设置散点的大小和颜色</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>drop <span class="op">=</span> go.Scatter(x<span class="op">=</span>tar_drop[<span class="st">'Volume'</span>],</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                    y<span class="op">=</span>tar_drop[<span class="st">'Price_Difference'</span>],</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                    mode<span class="op">=</span><span class="st">'markers'</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                    text<span class="op">=</span>tar_drop[<span class="st">'date'</span>],  <span class="co"># 在鼠标悬停时显示日期</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                    marker<span class="op">=</span><span class="bu">dict</span>(size<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">'blue'</span>),  <span class="co"># 设置散点的大小和颜色</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>layout_rise <span class="op">=</span> go.Layout(title<span class="op">=</span><span class="st">'Volume vs Daily Return'</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                   xaxis<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">'Volume'</span>),</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                   yaxis<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">'Daily Return (%)'</span>),</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                   )</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>fig_rise <span class="op">=</span> go.Figure(data<span class="op">=</span>rise, layout<span class="op">=</span>layout_rise)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># %%</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>fig_drop <span class="op">=</span> go.Figure(data<span class="op">=</span>drop, layout<span class="op">=</span>layout_rise)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="3a24a570" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig_rise.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>                            <div id="594b3122-2339-4e5e-8dce-ce2ad76afe1a" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("594b3122-2339-4e5e-8dce-ce2ad76afe1a")) {                    Plotly.newPlot(                        "594b3122-2339-4e5e-8dce-ce2ad76afe1a",                        [{"marker":{"color":"blue","size":10},"mode":"markers","text":["2020-03-02T00:00:00.000000000","2020-03-17T00:00:00.000000000","2020-03-19T00:00:00.000000000","2020-03-24T00:00:00.000000000","2020-03-26T00:00:00.000000000","2020-03-27T00:00:00.000000000","2020-04-08T00:00:00.000000000","2020-05-08T00:00:00.000000000","2020-05-18T00:00:00.000000000","2020-06-09T00:00:00.000000000","2020-06-15T00:00:00.000000000","2020-10-29T00:00:00.000000000","2020-11-02T00:00:00.000000000","2020-11-24T00:00:00.000000000","2021-01-27T00:00:00.000000000","2021-02-08T00:00:00.000000000","2021-02-22T00:00:00.000000000","2021-02-25T00:00:00.000000000","2021-03-15T00:00:00.000000000","2021-05-03T00:00:00.000000000","2021-06-01T00:00:00.000000000","2021-06-09T00:00:00.000000000","2021-06-16T00:00:00.000000000","2021-07-20T00:00:00.000000000","2021-10-08T00:00:00.000000000","2021-11-10T00:00:00.000000000","2022-01-25T00:00:00.000000000","2022-03-15T00:00:00.000000000","2022-03-31T00:00:00.000000000","2022-04-14T00:00:00.000000000","2022-05-05T00:00:00.000000000","2022-05-19T00:00:00.000000000","2022-10-13T00:00:00.000000000","2022-11-03T00:00:00.000000000","2022-11-04T00:00:00.000000000","2022-11-07T00:00:00.000000000","2023-02-09T00:00:00.000000000","2023-05-08T00:00:00.000000000","2023-06-06T00:00:00.000000000","2023-08-09T00:00:00.000000000","2023-10-24T00:00:00.000000000","2023-11-07T00:00:00.000000000","2020-03-24T00:00:00.000000000","2020-04-27T00:00:00.000000000","2020-05-08T00:00:00.000000000","2020-05-14T00:00:00.000000000","2020-06-04T00:00:00.000000000","2020-06-15T00:00:00.000000000","2020-07-10T00:00:00.000000000","2021-01-12T00:00:00.000000000","2021-01-20T00:00:00.000000000","2021-02-24T00:00:00.000000000","2021-05-26T00:00:00.000000000","2021-06-03T00:00:00.000000000","2021-11-22T00:00:00.000000000","2021-12-10T00:00:00.000000000","2022-01-04T00:00:00.000000000","2022-02-24T00:00:00.000000000","2023-12-14T00:00:00.000000000","2019-08-07T00:00:00.000000000","2019-11-05T00:00:00.000000000","2020-03-05T00:00:00.000000000","2020-03-16T00:00:00.000000000","2020-05-27T00:00:00.000000000","2021-01-26T00:00:00.000000000","2021-12-02T00:00:00.000000000","2022-03-03T00:00:00.000000000","2022-03-04T00:00:00.000000000","2022-06-21T00:00:00.000000000","2022-09-09T00:00:00.000000000","2023-09-08T00:00:00.000000000","2020-03-18T00:00:00.000000000","2020-03-24T00:00:00.000000000","2020-03-26T00:00:00.000000000","2022-11-11T00:00:00.000000000","2023-06-14T00:00:00.000000000","2020-03-02T00:00:00.000000000","2020-03-17T00:00:00.000000000","2020-03-26T00:00:00.000000000","2020-03-02T00:00:00.000000000","2020-03-17T00:00:00.000000000","2020-03-26T00:00:00.000000000","2022-06-07T00:00:00.000000000","2022-11-17T00:00:00.000000000","2020-03-19T00:00:00.000000000","2020-03-26T00:00:00.000000000","2020-04-06T00:00:00.000000000","2020-04-08T00:00:00.000000000","2020-07-20T00:00:00.000000000","2020-08-26T00:00:00.000000000","2020-12-22T00:00:00.000000000","2021-02-02T00:00:00.000000000","2022-01-28T00:00:00.000000000","2022-01-31T00:00:00.000000000","2022-02-24T00:00:00.000000000","2022-06-02T00:00:00.000000000","2022-07-05T00:00:00.000000000","2022-11-10T00:00:00.000000000","2022-11-30T00:00:00.000000000","2023-10-06T00:00:00.000000000","2019-02-08T00:00:00.000000000","2019-03-21T00:00:00.000000000","2020-02-28T00:00:00.000000000","2020-03-19T00:00:00.000000000","2020-03-23T00:00:00.000000000","2020-03-24T00:00:00.000000000","2020-04-06T00:00:00.000000000","2020-07-23T00:00:00.000000000","2020-08-28T00:00:00.000000000","2020-10-19T00:00:00.000000000","2020-12-04T00:00:00.000000000","2020-12-31T00:00:00.000000000","2021-05-14T00:00:00.000000000","2021-05-17T00:00:00.000000000","2021-08-25T00:00:00.000000000","2021-11-11T00:00:00.000000000","2022-02-15T00:00:00.000000000","2022-05-25T00:00:00.000000000","2022-10-13T00:00:00.000000000","2023-01-05T00:00:00.000000000","2020-03-17T00:00:00.000000000","2020-03-24T00:00:00.000000000","2020-03-26T00:00:00.000000000","2020-04-09T00:00:00.000000000","2020-05-14T00:00:00.000000000","2020-06-15T00:00:00.000000000","2020-06-25T00:00:00.000000000","2020-07-10T00:00:00.000000000","2020-07-21T00:00:00.000000000","2021-02-17T00:00:00.000000000","2021-04-14T00:00:00.000000000","2021-10-15T00:00:00.000000000","2022-06-24T00:00:00.000000000","2022-10-13T00:00:00.000000000","2023-01-13T00:00:00.000000000","2020-03-02T00:00:00.000000000","2020-03-13T00:00:00.000000000","2020-03-17T00:00:00.000000000","2020-03-18T00:00:00.000000000","2020-04-06T00:00:00.000000000","2020-07-07T00:00:00.000000000"],"x":[1778700.0,2665900.0,2433300.0,1276600.0,1568100.0,1173400.0,1190400.0,1400600.0,1781200.0,1215900.0,1263200.0,1878800.0,2979000.0,2994900.0,5482300.0,1651400.0,3861100.0,6454500.0,3523900.0,2580500.0,2671200.0,15772300.0,2535500.0,1080000.0,1087300.0,1168200.0,1008200.0,995400.0,2845800.0,4925600.0,3337600.0,1343500.0,695500.0,1603400.0,1168100.0,1490100.0,3629200.0,1937000.0,837300.0,1187400.0,2294400.0,2514900.0,146192100.0,91082800.0,101207100.0,108061100.0,115798600.0,104742600.0,73710700.0,124808500.0,125033200.0,95152800.0,227538700.0,179671400.0,137861700.0,169657200.0,311645200.0,110443900.0,110777600.0,30946500.0,26560000.0,25208100.0,24770300.0,14999700.0,24965000.0,26027500.0,27439600.0,21597500.0,8713900.0,13877700.0,16741900.0,19498800.0,18849500.0,17200800.0,12597500.0,17415500.0,90605027.0,78966008.0,84786312.0,9691100.0,10586400.0,7014000.0,33299700.0,11300500.0,3906200.0,2838500.0,2833600.0,4652200.0,1938200.0,6196700.0,4133300.0,5640000.0,2441600.0,3089900.0,2630800.0,4552700.0,2312500.0,4396200.0,8712600.0,2208600.0,7119700.0,14606200.0,7869500.0,6842400.0,10503800.0,10365300.0,6465800.0,11060800.0,11744300.0,17145100.0,6454400.0,15479800.0,7204500.0,16960000.0,17780000.0,5337700.0,3257200.0,3757000.0,5870600.0,10042200.0,58112800.0,48630300.0,45494700.0,62462000.0,87965500.0,48311400.0,45102200.0,56483300.0,58395200.0,80157700.0,64926900.0,60096600.0,39407700.0,23808700.0,41649700.0,17074200.0,14320700.0,17602000.0,25785300.0,15922900.0,31152700.0],"y":[0.07486630231972989,0.07552319754248797,0.09922829134362306,0.08226500918879502,0.06190472557431176,0.07939510006098828,0.05510203585134164,0.09599999321831597,0.08598131707416636,0.054355884262712484,0.0548522867177879,0.06756758280615442,0.10615385495699368,0.0819444678079941,0.19117648662947026,0.058252437457946074,0.054166715785310425,0.056482616500377614,0.06565069603133955,0.07397958066551868,0.07914574264092306,0.11422849655434969,0.06589499153667086,0.053684234619140625,0.057367745276925446,0.07287452011022082,0.05278881822559014,0.05480992704604487,0.10813493659106464,0.10245901799528744,0.08999997919256036,0.06796120590897621,0.05629130812215746,0.12299460658947108,0.050609180692769755,0.0605521222523903,0.1309523516681637,0.07159352153387835,0.06597218427945217,0.05699996948242188,0.06825940038461066,0.08365312163666032,0.10738255964278388,0.052953205083880614,0.05645155863260793,0.05387931189518626,0.05967747964174454,0.05177996449029077,0.051724086902089385,0.051612852945371795,0.06158359165509766,0.051413914100013385,0.056230986299265324,0.05544555602235589,0.056214553218077924,0.08497725170846143,0.07948485665157332,0.07254533233373472,0.05318218330218579,0.08340889379569563,0.08710935582057601,0.09200657870377082,0.06034778255601235,0.05751507802462195,0.07418144009858302,0.051578014334134066,0.0545454253420305,0.0858511413450786,0.05034721359886539,0.052695550589387734,0.051523281104566804,0.05016206133778764,0.1009133210163701,0.051515591582142514,0.057621362974519294,0.05005579722165967,0.05117330007733063,0.05043583162750414,0.06694562695755976,0.05494293341150179,0.08946587742967374,0.05120910752195361,0.05391889005093961,0.055577267505528924,0.11175436722604852,0.0605928114369852,0.07543120844901464,0.0605223926145639,0.05889742753636768,0.0630505019226682,0.0649173200623063,0.07894523378394346,0.05133519959108736,0.056629767097156336,0.07649110785487839,0.0882466651411144,0.0565179891042945,0.05606899919181035,0.06339853407772077,0.054806725771087576,0.05084360591096986,0.08167954741289489,0.06334930857973235,0.07328764841556161,0.07105013301512886,0.07661614941273046,0.06569886869443861,0.05052347041617098,0.06711791115520353,0.06980387369791667,0.05612244897959184,0.11001999390565818,0.05909227969589454,0.0733146270286743,0.07324268900722111,0.061732817233727595,0.05058289979827583,0.05516872424900487,0.05691055229604349,0.05289899898966383,0.0723850908703578,0.07270033599333955,0.053528799826394205,0.06683804201842344,0.08721194660492361,0.05026055262265402,0.05431439924834591,0.05334983423894266,0.058585889411695076,0.06552125771701367,0.05768264159997433,0.058180222580737746,0.05377450878869556,0.06616354888340212,0.0686321913794297,0.07695166260888284,0.054138957187775796,0.05755081747236264,0.06591305940047554,0.05887789585062432,0.0717602382354991],"type":"scatter"}],                        {"title":{"text":"Volume vs Daily Return"},"xaxis":{"title":{"text":"Volume"}},"yaxis":{"title":{"text":"Daily Return (%)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('594b3122-2339-4e5e-8dce-ce2ad76afe1a');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+<div id="d19a4b58" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig_drop.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>                            <div id="842a7874-68b2-410d-a88e-850d86fca7b4" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("842a7874-68b2-410d-a88e-850d86fca7b4")) {                    Plotly.newPlot(                        "842a7874-68b2-410d-a88e-850d86fca7b4",                        [{"marker":{"color":"blue","size":10},"mode":"markers","text":["2019-07-11T00:00:00.000000000","2019-10-01T00:00:00.000000000","2020-02-25T00:00:00.000000000","2020-03-11T00:00:00.000000000","2020-03-12T00:00:00.000000000","2020-03-16T00:00:00.000000000","2020-03-18T00:00:00.000000000","2020-03-23T00:00:00.000000000","2020-04-03T00:00:00.000000000","2020-04-07T00:00:00.000000000","2020-05-07T00:00:00.000000000","2020-05-12T00:00:00.000000000","2020-05-13T00:00:00.000000000","2020-05-28T00:00:00.000000000","2020-06-10T00:00:00.000000000","2020-10-21T00:00:00.000000000","2020-10-27T00:00:00.000000000","2020-11-04T00:00:00.000000000","2020-11-30T00:00:00.000000000","2020-12-22T00:00:00.000000000","2021-01-20T00:00:00.000000000","2021-01-26T00:00:00.000000000","2021-02-18T00:00:00.000000000","2021-02-26T00:00:00.000000000","2021-04-07T00:00:00.000000000","2021-08-19T00:00:00.000000000","2021-10-26T00:00:00.000000000","2021-12-01T00:00:00.000000000","2022-02-22T00:00:00.000000000","2022-05-10T00:00:00.000000000","2022-08-04T00:00:00.000000000","2022-12-07T00:00:00.000000000","2023-04-25T00:00:00.000000000","2023-05-10T00:00:00.000000000","2020-02-25T00:00:00.000000000","2020-03-18T00:00:00.000000000","2020-03-23T00:00:00.000000000","2020-03-25T00:00:00.000000000","2020-05-13T00:00:00.000000000","2020-06-10T00:00:00.000000000","2020-06-19T00:00:00.000000000","2021-04-20T00:00:00.000000000","2021-04-29T00:00:00.000000000","2021-12-03T00:00:00.000000000","2022-01-19T00:00:00.000000000","2022-01-26T00:00:00.000000000","2022-03-07T00:00:00.000000000","2022-09-20T00:00:00.000000000","2022-12-16T00:00:00.000000000","2023-10-27T00:00:00.000000000","2020-03-20T00:00:00.000000000","2020-03-25T00:00:00.000000000","2021-01-28T00:00:00.000000000","2021-03-31T00:00:00.000000000","2021-12-08T00:00:00.000000000","2022-06-17T00:00:00.000000000","2020-03-12T00:00:00.000000000","2020-03-20T00:00:00.000000000","2020-04-07T00:00:00.000000000","2022-03-07T00:00:00.000000000","2022-04-26T00:00:00.000000000","2022-06-28T00:00:00.000000000","2020-03-20T00:00:00.000000000","2021-05-17T00:00:00.000000000","2022-01-26T00:00:00.000000000","2023-04-20T00:00:00.000000000","2020-03-03T00:00:00.000000000","2020-03-12T00:00:00.000000000","2020-03-25T00:00:00.000000000","2020-11-09T00:00:00.000000000","2021-03-02T00:00:00.000000000","2022-03-07T00:00:00.000000000","2022-10-14T00:00:00.000000000","2022-11-09T00:00:00.000000000","2019-03-01T00:00:00.000000000","2019-03-04T00:00:00.000000000","2019-06-03T00:00:00.000000000","2020-04-21T00:00:00.000000000","2020-07-13T00:00:00.000000000","2021-01-04T00:00:00.000000000","2021-12-01T00:00:00.000000000","2022-01-26T00:00:00.000000000","2022-03-07T00:00:00.000000000","2022-08-26T00:00:00.000000000","2022-11-02T00:00:00.000000000","2022-11-04T00:00:00.000000000","2019-03-22T00:00:00.000000000","2019-07-16T00:00:00.000000000","2019-10-31T00:00:00.000000000","2020-01-31T00:00:00.000000000","2020-02-25T00:00:00.000000000","2020-03-11T00:00:00.000000000","2020-03-16T00:00:00.000000000","2020-03-18T00:00:00.000000000","2020-04-07T00:00:00.000000000","2020-06-11T00:00:00.000000000","2020-07-24T00:00:00.000000000","2021-01-08T00:00:00.000000000","2021-03-04T00:00:00.000000000","2021-03-23T00:00:00.000000000","2021-05-18T00:00:00.000000000","2021-08-26T00:00:00.000000000","2022-03-07T00:00:00.000000000","2022-06-08T00:00:00.000000000","2022-09-13T00:00:00.000000000","2022-10-27T00:00:00.000000000","2022-11-16T00:00:00.000000000","2023-10-26T00:00:00.000000000","2020-03-11T00:00:00.000000000","2020-03-12T00:00:00.000000000","2020-03-20T00:00:00.000000000","2020-04-07T00:00:00.000000000","2020-04-13T00:00:00.000000000","2020-04-14T00:00:00.000000000","2020-05-13T00:00:00.000000000","2020-06-05T00:00:00.000000000","2020-06-10T00:00:00.000000000","2021-06-17T00:00:00.000000000","2021-08-31T00:00:00.000000000","2022-03-07T00:00:00.000000000","2023-03-09T00:00:00.000000000","2020-05-19T00:00:00.000000000"],"x":[2348400.0,1489000.0,1501100.0,1938700.0,2752500.0,1891400.0,2200700.0,1904900.0,1438500.0,1469900.0,1255700.0,1299100.0,1378400.0,762100.0,1252500.0,4108500.0,2141200.0,7109700.0,2931800.0,3807200.0,4279700.0,9642600.0,3418400.0,5750300.0,12741000.0,1109600.0,824600.0,644000.0,707900.0,1434500.0,1476200.0,1255800.0,1605600.0,1755900.0,108888300.0,125954700.0,134925000.0,198999400.0,100192300.0,147327100.0,126127800.0,83170800.0,230430600.0,120275200.0,153198200.0,135786400.0,87999200.0,196340000.0,118345700.0,187029600.0,21979200.0,20521000.0,28535200.0,18974100.0,18433300.0,21124500.0,21534800.0,15761900.0,10468100.0,11383400.0,7977900.0,31296500.0,154553565.0,227010260.0,188252808.0,129904800.0,10927400.0,10208800.0,12563200.0,5092800.0,22090500.0,5743400.0,4762800.0,4018400.0,5545300.0,6069900.0,2941300.0,3445100.0,1761800.0,3332800.0,2561800.0,4879500.0,4147200.0,9891000.0,2190500.0,5266300.0,8670800.0,11346500.0,22281500.0,14053200.0,5893900.0,7660600.0,8872800.0,8865200.0,7256600.0,8163900.0,8032800.0,7544400.0,9249200.0,7028300.0,7267300.0,7217500.0,4744900.0,7200700.0,8297100.0,6786500.0,6852700.0,17872200.0,44769500.0,68447600.0,73915800.0,39229900.0,36068900.0,64267100.0,90209900.0,107651200.0,82090000.0,48910400.0,73514300.0,56332500.0,33599800.0,24915400.0],"y":[-0.059948311345924724,-0.060693600194571616,-0.059905112237168275,-0.0722300610177671,-0.11010683189707526,-0.08173909394637398,-0.16681858515594228,-0.1243731887242985,-0.07897440592447917,-0.07058826279337757,-0.07251262070594255,-0.05821920268910022,-0.0693694082253462,-0.05634860829114823,-0.05706135268289936,-0.10340313817524029,-0.0536277830291704,-0.069164267307763,-0.07077325737269605,-0.10416666942614103,-0.07448275335903826,-0.06706405465079673,-0.07579789535998764,-0.10250002145767212,-0.1456199930063883,-0.05065856188423631,-0.0546874742223217,-0.05621032643416669,-0.05714289884873023,-0.07142856556629994,-0.05029017892553187,-0.06269593858815845,-0.060639388706308674,-0.0565261318536646,-0.05859372647440319,-0.05263157894736842,-0.06088987194521309,-0.06585790566673445,-0.056000041961669925,-0.07094133510762729,-0.06174696621328596,-0.050580480027126735,-0.05457595523576014,-0.06038298472800901,-0.08924944785544758,-0.05235603852862353,-0.05166270057458311,-0.07097232002629407,-0.05090059114362947,-0.08874659102886535,-0.07240874575872491,-0.06835609378812989,-0.06104031896052335,-0.05239594227894919,-0.050144183200266104,-0.07857994963443118,-0.051514843867563546,-0.0567753470382192,-0.05118369157083476,-0.050076317241173667,-0.05064986577193308,-0.05009240593174865,-0.06598820473773714,-0.06386152361552441,-0.1011860625020007,-0.05665416984558121,-0.05500003269740513,-0.06670692522862622,-0.08151736891808462,-0.050505611661886544,-0.07722987839959719,-0.05827761027079209,-0.056900527765653124,-0.05022346812719585,-0.053590224602343826,-0.05349883578706902,-0.058719651029221574,-0.05501991636730728,-0.05983816506325026,-0.050102031355283086,-0.054204025740057636,-0.06443834885104563,-0.06821953548251392,-0.0542045073075728,-0.057653156256960464,-0.057423078995975846,-0.055804889958079265,-0.05713237313704326,-0.09876111868407525,-0.05292081359611867,-0.06443504981917808,-0.056043503184418676,-0.05857384510148725,-0.05990334134317398,-0.05905595327695063,-0.05087405898931038,-0.05533514335221732,-0.06445206236076252,-0.08581707029040037,-0.06485715593610492,-0.05192957877285508,-0.05469108042089267,-0.06141762477712712,-0.08017818750541619,-0.05662189522725363,-0.06912440442533845,-0.05915786540139466,-0.09121140835547398,-0.050513875023344715,-0.08755446996853611,-0.07601116743302001,-0.06439022901581555,-0.05388322846935335,-0.0601058943783885,-0.059290189188272266,-0.06550602990074358,-0.08018576513203636,-0.06551648700628662,-0.05598015065099255,-0.05701935680029047,-0.05317674105941277,-0.051612926389053605],"type":"scatter"}],                        {"title":{"text":"Volume vs Daily Return"},"xaxis":{"title":{"text":"Volume"}},"yaxis":{"title":{"text":"Daily Return (%)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}}},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('842a7874-68b2-410d-a88e-850d86fca7b4');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>From these two figures, we can find that when the rise and fall are large, there is indeed a certain relationship between the rise and fall and the volume. When the volume is small, the stock price is more likely to move significantly, and when the volume is large, the stock price is more likely to move smaller.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

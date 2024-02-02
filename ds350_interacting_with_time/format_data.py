@@ -42,8 +42,8 @@ dat = yf.download(tickers_use, period="5y", interval="1d").reset_index()
 # %%'
 dat = pl.from_pandas(dat).melt(id_vars="('Date', '')" )\
     .with_columns(
-        pl.col('variabl')
-        .str.replace_many(["’", "(", ")", " "], "")\
+        pl.col('variable')
+        .str.replace_many(["'", "(", ")", " "], "")\
         .str.split_exact(",", 1).alias("variable"))\
     .unnest("variable")\
     .rename({"('Date', '')": "date"})\
@@ -53,4 +53,7 @@ dat = pl.from_pandas(dat).melt(id_vars="('Date', '')" )\
         columns="field_0",
         aggregate_function="first")\
     .rename({"field_1": "ticker"})
+
+# %%
 dat.write_parquet("stock.parquet")
+# %%

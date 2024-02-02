@@ -44,4 +44,63 @@ fig = go.Figure(data=[go.Candlestick(x=df['date'],
                 high=df['High'],
                 low=df['Low'],
                 close=df['Close'])])
-fig.show()'
+fig.show()
+
+# %%
+# Create a trace for volume as a bar chart
+trace_volume = go.Bar(x=pdat['date'], y=pdat['Volume'], name='Volume', opacity=0.7, yaxis='y2')
+
+# %%
+traces = []
+trace_candlestick = go.Candlestick(x=df['date'],
+                                    open=df['Open'],
+                                    high=df['High'],
+                                    low=df['Low'],
+                                    close=df['Close'],
+                                    name='WMT - Candlestick')
+
+
+# %%
+# Create the layout
+layout_close = go.Layout(title='Closing Price Over Time',
+                         xaxis=dict(title='Date'),
+                         yaxis=dict(title='Closing Price'),
+                         yaxis2=dict(title='Volume', overlaying='y', side='right'),
+                         legend=dict(x=0, y=1, traceorder='normal'))
+
+
+traces.extend([trace_candlestick, trace_volume])
+# Create the figure
+fig_close = go.Figure(data=traces, layout=layout_close)
+
+# Show the interactive plot
+fig_close.show()
+# %%
+pdat = pdat.with_columns(
+    Price_Difference=(pdat['Close'] - pdat['Open']) /  pdat['Open']
+)
+# %%
+price_rise_pdat = pdat.filter(pdat['Price_Difference'] >= 0)
+price_stay_pdat = pdat.filter(pdat['Price_Difference'] == 0)
+price_drop_pdat = pdat.filter(pdat['Price_Difference'] < 0)
+# %%
+price_rise_pdat.select(['Volume', 'Price_Difference']).describe()
+# %%
+price_drop_pdat.select(['Volume', 'Price_Difference']).describe()
+# %%
+price_stay_pdat.select(['Volume', 'Price_Difference']).describe()
+# %%
+tar_drop = pdat.filter(pdat['Price_Difference'] < -0.05)
+
+# %%
+tar_rise = pdat.filter(pdat['Price_Difference'] > 0.05)
+# %%
+scatter = go.Scatter(x=df['Volume'],
+                    y=df['Daily_Return'],
+                    mode='markers',
+                    text=df['date'],  # 在鼠标悬停时显示日期
+                    marker=dict(size=10, color='blue'),  # 设置散点的大小和颜色
+                    )
+# %%
+go.Figure(rise)
+# %%
