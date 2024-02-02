@@ -1,10 +1,5 @@
----
-title: "How to use Volume in Trading Strategy"
-format:
-  html:
-    code-fold: true
-jupyter: python3
----
+## "How to use Volume in Trading Strategy"
+
 
 ### Question:
 __"How does trading volume correlate with price movements? Are there specific instances of high volume coinciding with significant price changes, providing potential signals for an investor's trading strategy?"__
@@ -30,7 +25,7 @@ pdat = pdat.with_columns(
 )
 ```
 
-Let's first use describe() to study the Volume and Price_Difference data to he lp us find how to defne significant price changes. We sperate the dataset into three parts according to the daily rise and fall of price.
+Let's first use describe() to study the Volume and Price_Difference data to help us find how to define significant price changes. We sperate the dataset into three parts according to the daily rise and fall of price.
 
 ```{python}
 # %%

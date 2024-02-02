@@ -95,12 +95,37 @@ tar_drop = pdat.filter(pdat['Price_Difference'] < -0.05)
 # %%
 tar_rise = pdat.filter(pdat['Price_Difference'] > 0.05)
 # %%
-scatter = go.Scatter(x=df['Volume'],
-                    y=df['Daily_Return'],
+rise = go.Scatter(x=tar_rise['Volume'],
+                    y=tar_rise['Price_Difference'],
                     mode='markers',
-                    text=df['date'],  # 在鼠标悬停时显示日期
+                    text=tar_rise['date'],  # 在鼠标悬停时显示日期
+                    marker=dict(size=10, color='blue'),  # 设置散点的大小和颜色
+                    )
+
+drop = go.Scatter(x=tar_drop['Volume'],
+                    y=tar_drop['Price_Difference'],
+                    mode='markers',
+                    text=tar_drop['date'],  # 在鼠标悬停时显示日期
+                    marker=dict(size=10, color='blue'),  # 设置散点的大小和颜色
+                    )
+
+layout_rise = go.Layout(title='Volume vs Daily Return',
+                   xaxis=dict(title='Volume'),
+                   yaxis=dict(title='Daily Return (%)'),
+                   )
+# %%
+go.Figure(data=rise, layout=layout_rise)
+# %%
+go.Figure(data=drop, layout=layout_rise)
+# %%
+a = pdat.filter(pdat['Price_Difference'] < 0.02)
+a =  a.filter(a['Price_Difference'] > -0.02)
+a = go.Scatter(x=a['Volume'],
+                    y=a['Price_Difference'],
+                    mode='markers',
+                    text=a['date'],  # 在鼠标悬停时显示日期
                     marker=dict(size=10, color='blue'),  # 设置散点的大小和颜色
                     )
 # %%
-go.Figure(rise)
+go.Figure(data=a, layout=layout_rise)
 # %%
